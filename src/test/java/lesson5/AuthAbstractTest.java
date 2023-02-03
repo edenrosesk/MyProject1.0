@@ -1,27 +1,38 @@
+package lesson5;
+
 import io.github.bonigarcia.wdm.WebDriverManager;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
-import org.openqa.selenium.*;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.time.Duration;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class Authorization {
+public abstract class AuthAbstractTest {
 
-    public static void main(String[] args) {
+    private static WebDriver driver;
 
+    @BeforeAll
+    static void init() {
         WebDriverManager.firefoxdriver().setup();
         FirefoxOptions options = new FirefoxOptions();
         options.addArguments("--incognito");
+        //options.addArguments("--headless");
         options.addArguments("start-maximized");
-
-        WebDriver driver = new FirefoxDriver(options);
-        driver.get("https://knigavuhe.org");
+        driver = new FirefoxDriver(options);
         driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+    }
+
+    @BeforeEach
+    void goTo() throws InterruptedException {
+        Assertions.assertDoesNotThrow(() -> driver.navigate().to("https://knigavuhe.org"),
+                "Страница не доступна");
+        Thread.sleep(2000);
 
         WebElement goToLoginPageButton = driver.findElement(By.xpath(".//div[@class='header_right']/a"));
         goToLoginPageButton.click();
@@ -36,12 +47,17 @@ public class Authorization {
         passwordInput.click();
         passwordInput.sendKeys("2H7SJg3ky6P7cVM");
 
-
         loginButton.click();
-
-
-      driver.quit();
     }
 
+
+    @AfterAll
+    static void close() {
+        driver.quit();
+    }
+
+    public static WebDriver getDriver() {
+        return driver;
+    }
 }
 

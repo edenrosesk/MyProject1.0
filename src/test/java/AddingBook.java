@@ -66,7 +66,6 @@ public class AddingBook {
 
         goToShelf(driver);
 
-        //driver.quit();
 
     }
 
